@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts"
+    "dev": "nodemon src/server.ts",
+    "knex:migrate": "knex --knexfile knexfile.ts migrate:latest"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
-    "knex": "^1.0.2"
+    "knex": "^1.0.2",
+    "pg": "^8.7.1"
   }
 }
