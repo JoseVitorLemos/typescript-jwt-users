@@ -20,6 +20,7 @@
   "homepage": "https://github.com/JoseVitorLemos/typescript-jwt-users#readme",
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.14",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
@@ -28,6 +29,7 @@
   "dependencies": {
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^1.0.2",
     "pg": "^8.7.1"
   }
