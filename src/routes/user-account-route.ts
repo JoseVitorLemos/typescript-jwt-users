@@ -6,12 +6,12 @@ const userAccount = Router()
 userAccount.get('/:id', async (req, res) => {
 	const { id } = req.params
 
-	const users = await knex('user_account')
+	const user = await knex('user_account')
 		.where('user_account.id', id)
 		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'updated_at').first()
 
-	if(users) {
-		return res.status(200).json(users)
+	if(user) {
+		return res.status(200).json(user)
 	} else {
 		return res.status(404).json({
 			statusCode: 404,
@@ -20,7 +20,7 @@ userAccount.get('/:id', async (req, res) => {
 	}
 })
 
-userAccount.post('/', async (req, res) => {
+userAccount.post('/signup', async (req, res) => {
 	const { email, password }	= req.body
 
 	const newUser = {
@@ -28,6 +28,10 @@ userAccount.post('/', async (req, res) => {
 		password,
 		created_at: new Date()
 	}
+
+	const findEmail = await knex('user_account').where('user_account.email', email).first()
+
+	if(findEmail) return res.status(400).json({ statusCode: 400, message: 'Email already registered' })
 
 	const id = await knex('user_account').insert(newUser).returning('id').then(prop => prop[0].id)
 
