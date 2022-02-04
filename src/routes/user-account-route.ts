@@ -20,4 +20,22 @@ userAccount.get('/:id', async (req, res) => {
 	}
 })
 
+userAccount.post('/', async (req, res) => {
+	const { email, password }	= req.body
+
+	const newUser = {
+		email,
+		password,
+		created_at: new Date()
+	}
+
+	const id = await knex('user_account').insert(newUser).returning('id').then(prop => prop[0].id)
+
+	const user = await knex('user_account')
+		.where('user_account.id', id)
+		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'updated_at').first()
+
+	return res.status(201).json(user)
+})
+
 export default userAccount
