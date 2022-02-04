@@ -8,7 +8,7 @@ userAccount.get('/:id', async (req, res) => {
 
 	const user = await knex('user_account')
 		.where('user_account.id', id)
-		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'updated_at').first()
+		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
 
 	if(user) {
 		return res.status(200).json(user)
@@ -37,9 +37,28 @@ userAccount.post('/signup', async (req, res) => {
 
 	const user = await knex('user_account')
 		.where('user_account.id', id)
-		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'updated_at').first()
+		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
 
 	return res.status(201).json(user)
+})
+
+
+userAccount.post('/login', async (req, res) => {
+	const { email, password } = req.body
+
+	const user = await knex('user_account')
+		.where('user_account.email', email)
+		.select('user_account.email', 'user_account.password').first()
+
+	if(!user) return res.status(400).json({ statusCode: 400, message: 'Email dont registered' })
+
+	if(user.email == email && user.password == password) {
+		return res.status(200).json('Login success !')
+	} else {
+		return res.status(400).json({ 
+			statusCode: 400, 
+			message: 'Autentication fail' })
+	}
 })
 
 export default userAccount
