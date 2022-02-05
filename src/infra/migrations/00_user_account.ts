@@ -3,7 +3,7 @@ import { Knex } from 'knex'
 export async function up(knex: Knex) {
 	return knex.schema.createTable('user_account', table => {
 		table.increments('id').primary()
-		table.string('email').notNullable()
+		table.string('email').notNullable().unique()
 		table.string('password').notNullable()
 		table.dateTime('created_at').notNullable()
 		table.dateTime('updated_at').nullable()
