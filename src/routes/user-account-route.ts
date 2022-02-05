@@ -3,6 +3,7 @@ import knex from '../infra/database/connection'
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import { verifyJWT } from '../infra/middlewares/jwt-token'
+import bcrypt from 'bcrypt'
 
 const userAccount = Router()
 
@@ -25,9 +26,11 @@ userAccount.get('/:id', verifyJWT,async (req, res) => {
 userAccount.post('/signup', async (req, res) => {
 	const { email, password }	= req.body
 
+	const hashedPassword = await bcrypt.hash(password, 10)
+
 	const newUser = {
 		email,
-		password,
+		password: hashedPassword,
 		created_at: new Date()
 	}
 
@@ -44,7 +47,6 @@ userAccount.post('/signup', async (req, res) => {
 	return res.status(201).json(user)
 })
 
-
 userAccount.post('/login', async (req, res) => {
 	const { email, password } = req.body
 
@@ -54,7 +56,9 @@ userAccount.post('/login', async (req, res) => {
 
 	if(!user) return res.status(400).json({ statusCode: 400, message: 'Email dont registered' })
 
-	if(user.email == email && user.password == password) {
+	const checkPassword = await bcrypt.compare(password, user.password)
+
+	if(checkPassword) {
 
 		const token = jwt.sign({ userId: user.id }, process.env.TOKEN as string, { expiresIn: 600 })
 
