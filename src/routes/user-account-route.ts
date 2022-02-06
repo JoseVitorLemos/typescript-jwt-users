@@ -1,13 +1,13 @@
 import { Router } from 'express'
 import knex from '../infra/database/connection'
-import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import { verifyJWT } from '../infra/middlewares/jwt-token'
 import bcrypt from 'bcrypt'
+import generateToken from '../helper/generate-token'
 
 const userAccount = Router()
 
-userAccount.get('/:id', verifyJWT,async (req, res) => {
+userAccount.get('/:id', verifyJWT, async (req, res) => {
 	const { id } = req.params
 
 	const user = await knex('user_account')
@@ -58,13 +58,12 @@ userAccount.post('/login', async (req, res) => {
 
 	const checkPassword = await bcrypt.compare(password, user.password)
 
-	if(checkPassword) {
+	if(checkPassword) { 
+		const token = generateToken(user.id)
 
-		const token = jwt.sign({ userId: user.id }, process.env.TOKEN as string, { expiresIn: 600 })
-
-		return res.status(200).json({ auth: true, token })
+		return res.status(200).json(token)
 	}
-
+ 
 	return res.status(401).json({ 
 		statusCode: 401, 
 		message: 'Autentication fail' 
