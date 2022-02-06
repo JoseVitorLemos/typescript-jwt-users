@@ -66,8 +66,45 @@ userAccount.post('/login', async (req, res) => {
  
 	return res.status(401).json({ 
 		statusCode: 401, 
-		message: 'Autentication fail' 
+		message: 'Invalid password' 
 	}).end()
+})
+
+userAccount.put('/user-account/:id', verifyJWT, async (req, res) => {
+	const { oldPassword, newPassword } = req.body
+
+	const { password } = await knex('user_account')
+		.where('user_account.id', req.params.id)
+		.select('user_account.password').first()
+
+	const equalPassword = await bcrypt.compare(newPassword, password)
+
+	if(equalPassword) return res.status(400).json({
+		statusCode: 400,
+		message: `Password it's equal`
+	})
+	
+	const checkPassword = await bcrypt.compare(oldPassword, password)
+
+	const hashedPassword = await bcrypt.hash(newPassword, 10)
+
+	if(checkPassword) {
+		try {
+ 			await knex('user_account').where('user_account.id', req.params.id).update({ password: hashedPassword })
+
+			return res.status(200).json({
+				statusCode: 200,
+				message: 'Updated success password'
+			})
+ 		} catch (err) {
+			return res.send(err).end()
+ 		}
+	}
+
+	return res.status(204).json({
+		statusCode: 204,
+		message: 'Invalid password'
+	})
 })
 
 export default userAccount
