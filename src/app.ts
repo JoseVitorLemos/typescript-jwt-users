@@ -19,7 +19,7 @@ class App {
 	}
 
 	setupRoutes() {
-		this.app.use('/account', UserAccountRoute.getUserRoute())	
+		this.app.use('/account', UserAccountRoute.getRoute())	
 	}
 }
 
