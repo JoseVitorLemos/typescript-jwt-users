@@ -1,11 +1,13 @@
 import express, { Application } from 'express'
+import UserAccountRoute from './routes/user-account-route'
 
 class App {
 	private app: Application
 
 	constructor() {
-		this.app = express()	
+		this.app = express()
 		this.bodyParse()
+		this.setupRoutes()
 	}
 
 	start(port: string | number = 3000) {
@@ -13,7 +15,11 @@ class App {
 	}
 
 	bodyParse() {
-	 return this.app.use(express.json())
+	 	return this.app.use(express.json())
+	}
+
+	setupRoutes() {
+		this.app.use('/account', UserAccountRoute.getUserRoute())	
 	}
 }
 
