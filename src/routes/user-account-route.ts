@@ -30,7 +30,7 @@ class UserAccount {
 			await this.userAccount.signup(req, res)
 		})
 
-		this.router.put('/update/:id', async (req, res) => {
+		this.router.put('/update/:id', verifyJWT, async (req, res) => {
 			await this.userAccount.update(req, res)
 		})
 	}
