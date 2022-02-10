@@ -1,5 +1,7 @@
 import 'dotenv/config'
 import knex from '../infra/database/connection'
+import bcrypt from 'bcrypt'
+import generateToken from '../helper/generate-token'
 import { Request, Response } from 'express'
 
 export default class UserAccountController {
@@ -18,4 +20,27 @@ export default class UserAccountController {
 			message: 'Users not found'
 		})
 	}	
+
+	async login(req: Request, res: Response) {
+		const { email, password } = req.body
+
+		const user = await knex('user_account')
+		.where('user_account.email', email)
+		.select('user_account.id', 'user_account.email', 'user_account.password').first()
+
+		if(!user) return res.status(400).json({ statusCode: 400, message: 'Email dont registered' })
+
+		const checkPassword = await bcrypt.compare(password, user.password)
+
+		if(checkPassword) { 
+			const token = generateToken(user.id)
+
+			return res.status(200).json(token)
+		}
+
+		return res.status(401).json({ 
+			statusCode: 401, 
+			message: 'Invalid password' 
+		}).end()
+	}
 }
