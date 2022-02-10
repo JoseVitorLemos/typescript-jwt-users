@@ -1,3 +1,4 @@
-import app from './infra/config/app'
+import 'dotenv/config'
+import App from './app'
 
-app.listen(3000, () => console.log(`Server running at ${3000}`))
+App.start(process.env.PORT)
