@@ -25,6 +25,10 @@ class UserAccount {
 		this.router.post('/login', async (req, res) => {
 			await this.userAccount.login(req, res)
 		})
+
+		this.router.post('/signup', async (req, res) => {
+			await this.userAccount.signup(req, res)
+		})
 	}
 }
 
