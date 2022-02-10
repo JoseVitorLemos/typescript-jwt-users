@@ -29,6 +29,10 @@ class UserAccount {
 		this.router.post('/signup', async (req, res) => {
 			await this.userAccount.signup(req, res)
 		})
+
+		this.router.put('/update/:id', async (req, res) => {
+			await this.userAccount.update(req, res)
+		})
 	}
 }
 
