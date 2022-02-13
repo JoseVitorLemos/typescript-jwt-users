@@ -33,6 +33,10 @@ class UserAccount {
 		this.router.put('/update/:id', verifyJWT, async (req, res) => {
 			await this.userAccount.update(req, res)
 		})
+
+		this.router.post('/refresh-token', async (req, res) => {
+			await this.userAccount.refreshToken(req, res)
+		})
 	}
 }
 

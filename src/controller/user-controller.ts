@@ -2,7 +2,7 @@ import 'dotenv/config'
 import knex from '../infra/database/connection'
 import bcrypt from '../helper/bcrypt'
 import { Request, Response } from 'express'
-import { signRefreshToken, signToken } from '../helper/jwt-helper'
+import { signToken, signRefreshToken, verifyRefreshToken } from '../helper/jwt-helper'
 
 export default class UserAccountController {
 	async findById(req: Request, res: Response) {
@@ -106,4 +106,23 @@ export default class UserAccountController {
 			message: 'Invalid password'
 		})
 	}
+
+	async refreshToken(req: Request, res: Response) {
+		const { refreshToken } = req.body
+
+		if(!refreshToken) res.status(400).json({
+			statusCode: 400,
+			message: 'Refresh Token invalid'
+		})
+
+		const userId = await verifyRefreshToken(refreshToken)
+		const accessToken = await signToken(Number(userId))
+		const refToken = await signRefreshToken((userId as number).toString())
+		res.status(200).json({ ...accessToken, refToken })
+
+		res.status(400).json({
+			statusCode: 400,
+			message: 'Unauthorized'
+		})
+	}	
 }
