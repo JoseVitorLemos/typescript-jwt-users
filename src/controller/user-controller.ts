@@ -71,34 +71,42 @@ export default class UserAccountController {
 	async update(req: Request, res: Response) {
 		const { newPassword, oldPassword } = req.body
 
+		const { userId } = req as any
+
 		const id = req.params.id
 
-		const { passwordHash } = await knex('user_account')
+		if(userId != id) res.status(400).json({
+			statusCode: 400,
+			message: 'Invalid id to update'
+		})
+
+		const { password } = await knex('user_account')
 			.where('user_account.id', id)
 			.select('user_account.password').first()
 
-		const equalPassword = await bcrypt.compare(newPassword, passwordHash)
+		try {
 
-		if(equalPassword) return res.status(400).json({
-			statusCode: 400,
-			message: `Password it's equal`
-		})
+			const equalPassword = await bcrypt.compare(newPassword, password)
 
-		const checkPassword = await bcrypt.compare(oldPassword, passwordHash)
+			if(equalPassword) return res.status(400).json({
+				statusCode: 400,
+				message: `Password it's equal`
+			})
 
-		const hashedPassword = await bcrypt.hash(newPassword)
+			const checkPassword = await bcrypt.compare(oldPassword, password)
 
-		if(checkPassword) {
-			try {
+			const hashedPassword = await bcrypt.hash(newPassword)
+
+			if(checkPassword) {
 				await knex('user_account').where('user_account.id', req.params.id).update({ password: hashedPassword })
 
 				return res.status(200).json({
 					statusCode: 200,
 					message: 'Updated success password'
 				})
-			} catch (err) {
-				return res.send(err).end()
 			}
+		} catch (err) {
+			return res.send(err).end()
 		}
 
 		return res.status(400).json({
