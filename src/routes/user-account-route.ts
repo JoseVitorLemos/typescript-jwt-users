@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { Router } from 'express'
 import UserAccountController from '../controller/user-controller'
-import { verifyJWT } from '../infra/middlewares/jwt-token'
+import { verifyJWT } from '../auth/jwt-token'
 
 class UserAccount {
 	private router: Router
