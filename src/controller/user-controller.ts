@@ -2,7 +2,7 @@ import 'dotenv/config'
 import knex from '../infra/database/connection'
 import bcrypt from '../helper/bcrypt'
 import { Request, Response } from 'express'
-import { signToken } from '../helper/jwt-helper'
+import { signRefreshToken, signToken } from '../helper/jwt-helper'
 
 export default class UserAccountController {
 	async findById(req: Request, res: Response) {
@@ -33,9 +33,10 @@ export default class UserAccountController {
 		const checkPassword = await bcrypt.compare(password, user.password)
 
 		if(checkPassword) { 
-			const token = signToken(user.id)
+			const acessToken = await signToken(user.id)
+			const refreshToken = await signRefreshToken(user.id.toString())
 
-			return res.status(200).json(token)
+			return res.status(200).json({ ...acessToken, refreshToken })
 		}
 
 		return res.status(401).json({ 
