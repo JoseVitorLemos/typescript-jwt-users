@@ -19,6 +19,10 @@ class App {
 	}
 
 	setupRoutes() {
+		this.app.get('/', async (_req, res) => {
+			return res.status(200).send('Welcome to my app')
+		})
+
 		this.app.use('/account', UserAccountRoute.getRoute())	
 	}
 }
