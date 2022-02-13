@@ -9,8 +9,8 @@ export default class UserAccountController {
 		const { id } = req.params
 
 		const user = await knex('user_account')
-		.where('user_account.id', id)
-		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
+			.where('user_account.id', id)
+			.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
 
 		if(user) {
 			return res.status(200).json(user)
@@ -25,8 +25,8 @@ export default class UserAccountController {
 		const { email, password } = req.body
 
 		const user = await knex('user_account')
-		.where('user_account.email', email)
-		.select('user_account.id', 'user_account.email', 'user_account.password').first()
+			.where('user_account.email', email)
+			.select('user_account.id', 'user_account.email', 'user_account.password').first()
 
 		if(!user) return res.status(400).json({ statusCode: 400, message: 'Email dont registered' })
 
@@ -62,11 +62,10 @@ export default class UserAccountController {
 
 		const id = await knex('user_account').insert(newUser).returning('id').then(prop => prop[0].id)
 
-		const user = await knex('user_account')
-		.where('user_account.id', id)
-		.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
+		const acessToken = await signToken(id)
+		const refreshToken = await signRefreshToken(id.toString())
 
-		return res.status(201).json(user)
+		return res.status(200).json({ ...acessToken, refreshToken })
 	}
 
 	async update(req: Request, res: Response) {
@@ -75,8 +74,8 @@ export default class UserAccountController {
 		const id = req.params.id
 
 		const { passwordHash } = await knex('user_account')
-		.where('user_account.id', id)
-		.select('user_account.password').first()
+			.where('user_account.id', id)
+			.select('user_account.password').first()
 
 		const equalPassword = await bcrypt.compare(newPassword, passwordHash)
 
