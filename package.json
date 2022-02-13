@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+		"start": "node dist/src/server.js",
     "dev": "nodemon src/server.ts",
-    "knex:migrate": "knex --knexfile knexfile.ts migrate:latest"
+    "knex:migrate": "knex --knexfile knexfile.ts migrate:latest",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
