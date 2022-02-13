@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken'
 
 export async function signToken (id: number) {
 	const privateKey = process.env.TOKEN!
-	const token = jwt.sign({ userId: id }, privateKey, { expiresIn: 600 })
-	return { auth: true, token }
+	const accessToken = jwt.sign({ userId: id }, privateKey, { expiresIn: 600 })
+	return { auth: true, accessToken }
 }
 
 export async function signRefreshToken(userId: string) {
