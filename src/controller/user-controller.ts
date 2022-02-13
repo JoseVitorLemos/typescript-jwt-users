@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import knex from '../infra/database/connection'
-import bcrypt from 'bcrypt'
+import bcrypt from '../helper/bcrypt'
 import generateToken from '../helper/generate-token'
 import { Request, Response } from 'express'
 
@@ -47,7 +47,7 @@ export default class UserAccountController {
 	async signup(req: Request, res: Response) {
 		const { email, password }	= req.body
 
-		const hashedPassword = await bcrypt.hash(password, 10)
+		const hashedPassword = await bcrypt.hash(password)
 
 		const newUser = {
 		 	email,
@@ -73,20 +73,20 @@ export default class UserAccountController {
 
 		const id = req.params.id
 
-		const { password } = await knex('user_account')
+		const { passwordHash } = await knex('user_account')
 		.where('user_account.id', id)
 		.select('user_account.password').first()
 
-		const equalPassword = await bcrypt.compare(newPassword, password)
+		const equalPassword = await bcrypt.compare(newPassword, passwordHash)
 
 		if(equalPassword) return res.status(400).json({
 			statusCode: 400,
 			message: `Password it's equal`
 		})
 
-		const checkPassword = await bcrypt.compare(oldPassword, password)
+		const checkPassword = await bcrypt.compare(oldPassword, passwordHash)
 
-		const hashedPassword = await bcrypt.hash(newPassword, 10)
+		const hashedPassword = await bcrypt.hash(newPassword)
 
 		if(checkPassword) {
 			try {
