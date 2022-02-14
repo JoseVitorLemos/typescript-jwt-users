@@ -30,7 +30,10 @@ export async function signRefreshToken(userId: string) {
 export async function verifyRefreshToken(refreshToken: string) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(refreshToken, process.env.REFRESH_TOKEN as string, (err, payload: any) => {
-			if(err) return reject(console.error('Unauthorized'))
+			if(err) {
+				console.log(err.message)
+				reject(new Error('Internal Server Error'))
+			}
 			const userId = payload.aud
 			resolve(userId)
 		})
