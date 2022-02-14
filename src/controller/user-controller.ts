@@ -15,11 +15,12 @@ export default class UserAccountController {
 		if(user) {
 			return res.status(200).json(user)
 		}
+
 		return res.status(404).json({
 			statusCode: 404,
 			message: 'Users not found'
 		})
-	}	
+	}
 
 	async login(req: Request, res: Response) {
 		const { email, password } = req.body
@@ -33,10 +34,10 @@ export default class UserAccountController {
 		const checkPassword = await bcrypt.compare(password, user.password)
 
 		if(checkPassword) { 
-			const acessToken = await signToken(user.id)
+			const accessToken = await signToken(user.id)
 			const refreshToken = await signRefreshToken(user.id.toString())
 
-			return res.status(200).json({ ...acessToken, refreshToken })
+			return res.status(200).json({ ...accessToken, refreshToken })
 		}
 
 		return res.status(401).json({ 
@@ -62,10 +63,10 @@ export default class UserAccountController {
 
 		const id = await knex('user_account').insert(newUser).returning('id').then(prop => prop[0].id)
 
-		const acessToken = await signToken(id)
+		const accessToken = await signToken(id)
 		const refreshToken = await signRefreshToken(id.toString())
 
-		return res.status(200).json({ ...acessToken, refreshToken })
+		return res.status(200).json({ ...accessToken, refreshToken })
 	}
 
 	async update(req: Request, res: Response) {
@@ -78,13 +79,17 @@ export default class UserAccountController {
 		if(userId != id) res.status(400).json({
 			statusCode: 400,
 			message: 'Invalid id to update'
-		})
-
-		const { password } = await knex('user_account')
-			.where('user_account.id', id)
-			.select('user_account.password').first()
+		}).end()
 
 		try {
+			const { password } = await knex('user_account')
+				.where('user_account.id', id)
+				.select('user_account.password').first()
+
+			if(!password) return res.status(400).json({
+				statusCode: 400,
+				message: `User id not exist`
+			})
 
 			const equalPassword = await bcrypt.compare(newPassword, password)
 
@@ -121,12 +126,15 @@ export default class UserAccountController {
 		if(!refreshToken) res.status(400).json({
 			statusCode: 400,
 			message: 'Refresh Token invalid'
-		})
+		}).end()
 
 		const userId = await verifyRefreshToken(refreshToken)
+		if(!userId) res.status(400).json({ statusCode: 400, message: 'Invalid signature' })
 		const accessToken = await signToken(Number(userId))
-		const refToken = await signRefreshToken((userId as number).toString())
-		res.status(200).json({ ...accessToken, refToken })
+
+		if(userId) {
+			res.status(200).json(accessToken).end()
+		}
 
 		res.status(400).json({
 			statusCode: 400,

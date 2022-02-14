@@ -1,10 +1,9 @@
 {
-  "name": "typescript-jwt-users",
+  "name": "Typescript Jwt UserAccount",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-		"start": "node dist/src/server.js",
+    "start": "node dist/src/server.js",
     "dev": "nodemon src/server.ts",
     "knex:migrate": "knex --knexfile knexfile.ts migrate:latest",
     "build": "tsc"
