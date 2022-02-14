@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { Router } from 'express'
 import UserAccountController from '../controller/user-controller'
-import { verifyJWT } from '../auth/auth-guard'
+import { AuthGuard } from '../auth/auth-guard'
 
 class UserAccount {
 	private router: Router
@@ -18,8 +18,12 @@ class UserAccount {
 	}
 
 	private routes() {
-		this.router.get('/:id', verifyJWT, async (req, res) => {
+		this.router.get('/:id', AuthGuard, async (req, res) => {
 			await this.userAccount.findById(req, res)
+		})
+
+		this.router.put('/update/:id', AuthGuard, async (req, res) => {
+			await this.userAccount.update(req, res)
 		})
 
 		this.router.post('/login', async (req, res) => {
@@ -28,10 +32,6 @@ class UserAccount {
 
 		this.router.post('/signup', async (req, res) => {
 			await this.userAccount.signup(req, res)
-		})
-
-		this.router.put('/update/:id', verifyJWT, async (req, res) => {
-			await this.userAccount.update(req, res)
 		})
 
 		this.router.post('/refresh-token', async (req, res) => {
