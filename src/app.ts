@@ -8,8 +8,7 @@ class App {
 
 	constructor() {
 		this.app = express()
-		this.enableCors()
-		this.bodyParse()
+		this.globalMiddleware()
 		this.setupRoutes()
 	}
 
@@ -30,6 +29,11 @@ class App {
 		}
 
 	 	return this.app.use(cors(options))
+	}
+
+	globalMiddleware() {
+		this.enableCors()
+		this.bodyParse()
 	}
 
 	setupRoutes() {
