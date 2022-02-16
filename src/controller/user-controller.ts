@@ -133,7 +133,7 @@ export default class UserAccountController {
 		const accessToken = await signToken(Number(userId))
 
 		if(userId) {
-			res.status(200).json(accessToken).end()
+			return res.status(200).json(accessToken)
 		}
 
 		res.status(400).json({
