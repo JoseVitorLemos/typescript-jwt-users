@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 export async function signToken (id: number) {
 	const privateKey = process.env.TOKEN!
-	const accessToken = jwt.sign({ userId: id }, privateKey, { expiresIn: 600 })
+	const accessToken = jwt.sign({ userId: id }, privateKey, { expiresIn: '1h' })
 	return { auth: true, accessToken }
 }
 

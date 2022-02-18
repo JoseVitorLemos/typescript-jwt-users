@@ -21,9 +21,7 @@ class App {
 	}
 
 	enableCors() {
-		const LocalHost = process.env.LOCAL_HOST!.split(',')
-		const allowedOrigins = LocalHost
-
+		const allowedOrigins = process.env.LOCAL_HOST!.split(',')
 		const options: cors.CorsOptions = {
 			origin: allowedOrigins
 		}
