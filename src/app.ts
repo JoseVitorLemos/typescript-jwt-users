@@ -1,5 +1,6 @@
 import express, { Application } from 'express'
 import UserAccountRoute from './routes/user-account-route'
+import AuthRoute from './routes/auth-route'
 import cors from 'cors'
 import 'dotenv/config'
 
@@ -40,6 +41,7 @@ class App {
 		})
 
 		this.app.use('/account', UserAccountRoute.getRoute())	
+		this.app.use('/auth', AuthRoute.getRoute())	
 	}
 }
 
