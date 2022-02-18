@@ -32,11 +32,7 @@ class UserAccount {
 
 		this.router.post('/signup', async (req, res) => {
 			await this.userAccount.signup(req, res)
-		})
-
-		this.router.post('/refresh-token', async (req, res) => {
-			await this.userAccount.refreshToken(req, res)
-		})
+		})	
 	}
 }
 

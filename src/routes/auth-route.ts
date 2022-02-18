@@ -20,6 +20,10 @@ class AuthRoute {
 		this.router.post('/token', async (req, res) => {
 			await this.auth.validateToken(req, res)
 		})
+
+		this.router.post('/refresh-token', async (req, res) => {
+			await this.auth.refreshToken(req, res)
+		})
 	}
 }
 
