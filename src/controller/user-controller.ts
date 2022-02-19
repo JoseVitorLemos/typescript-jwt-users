@@ -8,6 +8,8 @@ export default class UserAccountController {
 	async findById(req: Request, res: Response) {
 		const { id } = req.params
 
+		console.log('Request with id: '+id)
+
 		const user = await knex('user_account')
 			.where('user_account.id', id)
 			.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
