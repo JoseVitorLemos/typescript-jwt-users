@@ -26,22 +26,27 @@ export default class AuthController {
 	async refreshToken(req: Request, res: Response) {
 		const { refreshToken } = req.body
 
-		if(!refreshToken) res.status(400).json({
-			statusCode: 400,
-			message: 'Refresh Token invalid'
-		}).end()
+		try {
+			if(!refreshToken) {
+				return res.status(400).json({
+					statusCode: 400,
+					message: 'Refresh Token invalid'
+				})
+			}
 
-		const userId = await verifyRefreshToken(refreshToken)
-		if(!userId) res.status(400).json({ statusCode: 400, message: 'Invalid signature' })
-		const acessToken = await signToken(Number(userId))
+			const userId = await verifyRefreshToken(refreshToken)
 
-		if(userId) {
-			return res.status(200).json(acessToken)
+			if(!userId) res.status(400).json({ statusCode: 400, message: 'Invalid signature' })
+			const acessToken = await signToken(Number(userId))
+
+			if(userId) {
+				return res.status(200).json(acessToken)
+			}
+		} catch (err) {
+			return res.status(400).json({
+				statusCode: 400,
+				message: err 
+			})
 		}
-
-		res.status(400).json({
-			statusCode: 400,
-			message: 'Unauthorized'
-		})
 	}
 }

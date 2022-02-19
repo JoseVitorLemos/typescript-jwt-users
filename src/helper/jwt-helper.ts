@@ -31,8 +31,7 @@ export async function verifyRefreshToken(refreshToken: string) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(refreshToken, process.env.REFRESH_TOKEN as string, (err, payload: any) => {
 			if(err) {
-				console.log(err.message)
-				reject(new Error('Internal Server Error'))
+				reject(err.message)
 			}
 			const userId = payload.aud
 			resolve(userId)
