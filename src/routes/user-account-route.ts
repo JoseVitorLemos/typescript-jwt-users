@@ -18,8 +18,8 @@ class UserAccount {
 	}
 
 	private routes() {
-		this.router.get('/:id', AuthGuard, async (req, res) => {
-			await this.userAccount.findById(req, res)
+		this.router.post('/search', AuthGuard, async (req, res) => {
+			await this.userAccount.search(req, res)
 		})
 
 		this.router.put('/update/:id', AuthGuard, async (req, res) => {

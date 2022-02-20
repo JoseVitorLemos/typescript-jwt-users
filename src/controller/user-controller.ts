@@ -5,11 +5,11 @@ import { Request, Response } from 'express'
 import { signToken, signRefreshToken } from '../helper/jwt-helper'
 
 export default class UserAccountController {
-	async findById(req: Request, res: Response) {
-		const { id } = req.params
+	async search(req: Request, res: Response) {
+		const { email } = req.body
 
 		const user = await knex('user_account')
-			.where('user_account.id', id)
+			.where('user_account.email', email)
 			.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
 
 		if(user) {
