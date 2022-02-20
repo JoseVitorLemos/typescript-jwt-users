@@ -16,8 +16,8 @@ export default class UserAccountController {
 			return res.status(200).json(user)
 		}
 
-		return res.status(404).json({
-			statusCode: 404,
+		return res.status(400).json({
+			statusCode: 400,
 			message: 'Users not found'
 		})
 	}
@@ -70,53 +70,52 @@ export default class UserAccountController {
 	}
 
 	async update(req: Request, res: Response) {
-		const { newPassword, oldPassword } = req.body
+		const { newPassword, oldPassword, email } = req.body
 
 		const { userId } = req as any
 
-		const id = req.params.id
-
-		if(userId != id) res.status(400).json({
-			statusCode: 400,
-			message: 'Invalid id to update'
-		}).end()
-
 		try {
-			const { password } = await knex('user_account')
-				.where('user_account.id', id)
-				.select('user_account.password').first()
+			const { password, ...user } = await knex('user_account')
+				.where('user_account.id', userId)
+				.select('*').first()
 
 			if(!password) return res.status(400).json({
 				statusCode: 400,
 				message: `User id not exist`
 			})
 
-			const equalPassword = await bcrypt.compare(newPassword, password)
+			if(email === user.email) {
+				const equalPassword = await bcrypt.compare(newPassword, password)
 
-			if(equalPassword) return res.status(400).json({
-				statusCode: 400,
-				message: `Password it's equal`
-			})
-
-			const checkPassword = await bcrypt.compare(oldPassword, password)
-
-			const hashedPassword = await bcrypt.hash(newPassword)
-
-			if(checkPassword) {
-				await knex('user_account').where('user_account.id', req.params.id).update({ password: hashedPassword })
-
-				return res.status(200).json({
-					statusCode: 200,
-					message: 'Updated success password'
+				if(equalPassword) return res.status(400).json({
+					statusCode: 400,
+					message: `Password it's equal`
 				})
-			}
+
+				const checkPassword = await bcrypt.compare(oldPassword, password)
+
+				const hashedPassword = await bcrypt.hash(newPassword)
+
+				if(checkPassword) {
+					await knex('user_account').where('user_account.id', userId).update({ password: hashedPassword })
+
+					return res.status(200).json({
+						statusCode: 200,
+						message: 'Updated success password'
+					})
+				} else {
+					return res.status(400).json({
+						statusCode: 400,
+						message: 'Invalid password'
+					})
+				}
+			} 
+			return res.status(400).json({
+				statusCode: 400,
+				message: `Invalid email provided`
+			})
 		} catch (err) {
 			return res.send(err).end()
 		}
-
-		return res.status(400).json({
-			statusCode: 400,
-			message: 'Invalid password'
-		})
 	}	
 }

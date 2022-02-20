@@ -22,7 +22,7 @@ class UserAccount {
 			await this.userAccount.search(req, res)
 		})
 
-		this.router.put('/update/:id', AuthGuard, async (req, res) => {
+		this.router.put('/update', AuthGuard, async (req, res) => {
 			await this.userAccount.update(req, res)
 		})
 
