@@ -22,6 +22,7 @@ export default class UserAccountController {
 			message: 'Users not found'
 		})
 		} catch (err) {
+			console.error(err)
 			return res.status(400).send({ statusCode: 400, message: 'Error in search user' })
 		}
 	}
@@ -101,7 +102,7 @@ export default class UserAccountController {
 				const hashedPassword = await bcrypt.hash(newPassword)
 
 				if(checkPassword) {
-					await knex('user_account').where('user_account.id', userId).update({ password: hashedPassword })
+					await knex('user_account').where('user_account.id', userId).update({ password: hashedPassword , updated_at: new Date() })
 
 					return res.status(200).json({
 						statusCode: 200,
