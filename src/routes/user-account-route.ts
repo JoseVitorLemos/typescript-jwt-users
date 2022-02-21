@@ -18,7 +18,7 @@ class UserAccount {
 	}
 
 	private routes() {
-		this.router.post('/search', AuthGuard, async (req, res) => {
+		this.router.get('/search', AuthGuard, async (req, res) => {
 			await this.userAccount.search(req, res)
 		})
 

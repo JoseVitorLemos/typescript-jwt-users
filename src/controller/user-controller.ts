@@ -6,10 +6,11 @@ import { signToken, signRefreshToken } from '../helper/jwt-helper'
 
 export default class UserAccountController {
 	async search(req: Request, res: Response) {
-		const { email } = req.body
+	try {
+		const { email } = req.query
 
 		const user = await knex('user_account')
-			.where('user_account.email', email)
+			.where('user_account.email', email as string)
 			.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
 
 		if(user) {
@@ -20,6 +21,9 @@ export default class UserAccountController {
 			statusCode: 400,
 			message: 'Users not found'
 		})
+		} catch (err) {
+			return res.status(400).send({ statusCode: 400, message: 'Error in search user' })
+		}
 	}
 
 	async login(req: Request, res: Response) {
