@@ -13,7 +13,7 @@ class App {
 		this.setupRoutes()
 	}
 
-	start(port: string | number = 3000) {
+	start(port: string | number) {
 		return this.app.listen(port, () => console.log(`Server running at ${port}`))
 	}
 
