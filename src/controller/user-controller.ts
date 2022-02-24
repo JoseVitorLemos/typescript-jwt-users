@@ -6,24 +6,24 @@ import { signToken, signRefreshToken } from '../helper/jwt-helper'
 
 export default class UserAccountController {
 	async search(req: Request, res: Response) {
-	try {
-		const { email } = req.query
+		try {
+			const { email } = req.query
 
-		const user = await knex('user_account')
-			.where('user_account.email', email as string)
-			.select('user_account.id', 'user_account.email', 'user_account.created_at', 'user_account.updated_at').first()
+			const user = await knex('user_account')
+				.where('email', 'like', `%${email}%`)
+				.select('u.id', 'u.email', 'u.created_at', 'u.updated_at')
+				.from('user_account as u')
+				.first()
 
-		if(user) {
-			return res.status(200).json(user)
-		}
+			if(user) {
+				return res.status(200).json(user)
+			}
 
-		return res.status(400).json({
-			statusCode: 400,
-			message: 'Users not found'
-		})
+			return res.status(400).send({ statusCode: 400, message: 'Users not found' })
+
 		} catch (err) {
 			console.error(err)
-			return res.status(400).send({ statusCode: 400, message: 'Error in search user' })
+			return res.status(500).send({ statusCode: 500, message: 'Error in find' })
 		}
 	}
 
@@ -81,8 +81,8 @@ export default class UserAccountController {
 
 		try {
 			const { password, ...user } = await knex('user_account')
-				.where('user_account.id', userId)
-				.select('*').first()
+			.where('user_account.id', userId)
+			.select('*').first()
 
 			if(!password) return res.status(400).json({
 				statusCode: 400,
@@ -102,7 +102,12 @@ export default class UserAccountController {
 				const hashedPassword = await bcrypt.hash(newPassword)
 
 				if(checkPassword) {
-					await knex('user_account').where('user_account.id', userId).update({ password: hashedPassword , updated_at: new Date() })
+					await knex('user_account')
+						.where('user_account.id', userId)
+						.update({
+							password: hashedPassword,
+							updated_at: new Date()
+						})
 
 					return res.status(200).json({
 						statusCode: 200,
