@@ -45,8 +45,8 @@ export default class UserAccountController {
 			return res.status(200).json({ ...accessToken, refreshToken })
 		}
 
-		return res.status(401).json({ 
-			statusCode: 401, 
+		return res.status(400).json({ 
+			statusCode: 400, 
 			message: 'Invalid password' 
 		}).end()
 	}
