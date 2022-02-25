@@ -1,7 +1,8 @@
 import { body } from 'express-validator'
 
-const signupSchema = [
+const userSchema = [
   body('email')
+  .normalizeEmail()
   .isEmail()
   .withMessage('email must contain a valid email address'),
 
@@ -9,6 +10,6 @@ const signupSchema = [
 	.withMessage('password must container min 8 caracters and max 16')
 ]
 
-export { signupSchema }
+export { userSchema }
 
 

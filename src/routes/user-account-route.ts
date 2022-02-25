@@ -3,8 +3,8 @@ import { Request, Response } from 'express'
 import { Router } from 'express'
 import UserAccountController from '../controller/user-controller'
 import { AuthGuard } from '../auth/auth-guard'
-import { signupSchema } from '../controller/validations/user-validations'
-import { userSignupDto } from '../controller/validations/user-schemas'
+import { userSchema } from '../controller/validations/user-validations'
+import { userSchemaDto } from '../controller/validations/user-schemas'
 
 class UserAccount {
 	private router: Router
@@ -29,11 +29,11 @@ class UserAccount {
 			await this.userAccount.update(req, res)
 		})
 
-		this.router.post('/login', async (req: Request, res: Response) => {
+		this.router.post('/login', userSchema, userSchemaDto, async (req: Request, res: Response) => {
 			await this.userAccount.login(req, res)
 		})
 
-		this.router.post('/signup', signupSchema, userSignupDto, async (req: Request, res: Response) => {
+		this.router.post('/signup', userSchema, userSchemaDto, async (req: Request, res: Response) => {
 			await this.userAccount.signup(req, res)
 		})	
 	}
