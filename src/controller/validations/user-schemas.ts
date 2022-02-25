@@ -26,7 +26,7 @@ const updateSchema = [
   	.isEmail()
   	.withMessage('email must contain a valid email address'),
 
-	body('oldPassword').isLength({ max: 16 })
+	body('oldPassword').isLength({ min: 8, max: 16 })
 		.withMessage('old password must container max 16'),
 
 	body('newPassword').isLength({ min: 8, max: 16 })
