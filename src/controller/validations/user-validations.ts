@@ -1,28 +1,20 @@
-import { body } from 'express-validator'
+import { Request, Response, NextFunction } from 'express'
+import { validationResult } from 'express-validator'
 
-const userSchema = [
-  body('email')
-  	.normalizeEmail()
-  	.isEmail()
-  	.withMessage('email must contain a valid email address'),
+export const userSchemaDto = (req: Request, res: Response, next: NextFunction) => {
+	const errors = validationResult(req)
+	if (!errors.isEmpty()) {
+		const err = errors.array().map(err => err.msg)
+	  return res.status(400).json({ statusCode: 400, message: err })
+	}
+	next()
+}
 
-	body('password').isLength({ min: 8, max: 16 })
-		.withMessage('password must container min 8 caracters and max 16')
-]
-
-const updateSchema = [
-  body('email')
-  	.normalizeEmail()
-  	.isEmail()
-  	.withMessage('email must contain a valid email address'),
-
-	body('oldPassword').isLength({ max: 16 })
-		.withMessage('old password must container max 16'),
-
-	body('newPassword').isLength({ min: 8, max: 16 })
-		.withMessage('new password must container min 8 caracters and max 16')
-]
-
-export { userSchema, updateSchema }
-
-
+export const updateDto = (req: Request, res: Response, next: NextFunction) => {
+	const errors = validationResult(req)
+	if (!errors.isEmpty()) {
+		const err = errors.array().map(err => err.msg)
+	  return res.status(400).json({ statusCode: 400, message: err })
+	}
+	next()
+}

@@ -3,8 +3,8 @@ import { Request, Response } from 'express'
 import { Router } from 'express'
 import UserAccountController from '../controller/user-controller'
 import { AuthGuard } from '../auth/auth-guard'
-import { userSchema, updateSchema } from '../controller/validations/user-validations'
-import { userSchemaDto, updateDto } from '../controller/validations/user-schemas'
+import { userSchema, updateSchema } from '../controller/validations/user-schemas'
+import { userSchemaDto, updateDto } from '../controller/validations/user-validations'
 
 class UserAccount {
 	private router: Router
