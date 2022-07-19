@@ -7,6 +7,12 @@
 5. Hash with bcrypt
 6. Validation with express-validator
 
+<br><br>
+
+| VUE JS front-end                                                                  |                          URL                                     |
+| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| <img width='150' height="50" src="https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D" /> | <a href="https://github.com/JoseVitorLemos/vue-login-auth-refresh" target="_blank"> https://github.com/JoseVitorLemos/vue-login-auth-refresh <a />  |
+
 ## Social 
 
 <a href="https://www.linkedin.com/in/josé-vitor-08188320a/" target="_blank">
